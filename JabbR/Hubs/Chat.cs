@@ -14,6 +14,7 @@ using JabbR.Services;
 using JabbR.ViewModels;
 using Newtonsoft.Json;
 using SignalR.Hubs;
+using Ninject;
 
 namespace JabbR
 {
@@ -23,17 +24,19 @@ namespace JabbR
         private readonly IChatService _service;
         private readonly IResourceProcessor _resourceProcessor;
         private readonly IApplicationSettings _settings;
+        private readonly ICommandFactory _commandFactory;
 
-        public Chat(IApplicationSettings settings, IResourceProcessor resourceProcessor, IChatService service, IJabbrRepository repository)
+        public Chat(IApplicationSettings settings, IResourceProcessor resourceProcessor, IChatService service, IJabbrRepository repository, ICommandFactory commandFactory)
         {
             _settings = settings;
             _resourceProcessor = resourceProcessor;
             _service = service;
             _repository = repository;
+            _commandFactory = commandFactory;
         }
 
         private string UserAgent
-        {
+        { 
             get
             {
                 if (Context.Headers != null)
@@ -222,35 +225,11 @@ namespace JabbR
 
         public object GetCommands()
         {
-            return new[] {
-                new { Name = "help", Description = "Type /help to show the list of commands" },
-                new { Name = "nick", Description = "Type /nick [user] [password] to create a user or change your nickname. You can change your password with /nick [user] [oldpassword] [newpassword]" },
-                new { Name = "join", Description = "Type /join [room] [inviteCode] - to join a channel of your choice. If it is private and you have an invite code, enter it after the room name" },
-                new { Name = "create", Description = "Type /create [room] to create a room" },
-                new { Name = "me", Description = "Type /me 'does anything'" },
-                new { Name = "msg", Description = "Type /msg @nickname (message) to send a private message to nickname. @ is optional." },
-                new { Name = "leave", Description = "Type /leave to leave the current room. Type /leave [room name] to leave a specific room." },
-                new { Name = "rooms", Description = "Type /rooms to show the list of rooms" },
-                new { Name = "where", Description = "Type /where [name] to the rooms that user is in" },
-                new { Name = "who", Description = "Type /who to show a list of all users, /who [name] to show specific information about that user" },
-                new { Name = "list", Description = "Type /list (room) to show a list of users in the room" },
-                new { Name = "gravatar", Description = "Type /gravatar [email] to set your gravatar." },
-                new { Name = "nudge", Description = "Type /nudge to send a nudge to the whole room, or \"/nudge @nickname\" to nudge a particular user. @ is optional." },
-                new { Name = "kick", Description = "Type /kick [user] to kick a user from the room. Note, this is only valid for owners of the room." },
-                new { Name = "logout", Description = "Type /logout - To logout from this client (chat cookie will be removed)." },
-                new { Name = "addowner", Description = "Type /addowner [user] [room] - To add an owner a user as an owner to the specified room. Only works if you're an owner of that room." },
-                new { Name = "removeowner", Description = "Type /removeowner [user] [room] - To remove an owner from the specified room. Only works if you're the creator of that room." },
-                new { Name = "lock", Description = "Type /lock [room] - To make a room private. Only works if you're the creator of that room." },
-                new { Name = "close", Description = "Type /close [room] - To close a room. Only works if you're an owner of that room." },
-                new { Name = "allow", Description = "Type /allow [user] [room] - To give a user permission to a private room. Only works if you're an owner of that room." },
-                new { Name = "unallow", Description = "Type /unallow [user] [room] - To revoke a user's permission to a private room. Only works if you're an owner of that room." },
-                new { Name = "invitecode", Description = "Type /invitecode - To show the current invite code" },
-                new { Name = "resetinvitecode", Description = "Type /resetinvitecode - To reset the current invite code. This will render the previous invite code invalid" },
-                new { Name = "note", Description = "Type /note - To set a note shown via a paperclip icon next to your name, with the message appearing when you hover over it."},
-                new { Name = "afk", Description = "Type /afk - (aka. Away From Keyboard). To set a temporary note shown via a paperclip icon next to your name, with the message appearing when you hover over it. This note will disappear when you first resume typing."},
-                new { Name = "flag", Description = "Type /flag [Iso 3366-2 Code] - To show a small flag which represents your nationality. Eg. /flag US for a USA flag. ISO Reference Chart: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 (Apologies to people with dual citizenship). "},
-                new { Name = "topic", Description = "Type /topic [topic] to set the room topic. Type /topic to clear the room's topic." }
-            };
+            // Map the Name & Description properties from all the registered command objects to an array of anonymous objects
+            var commandInfo = _commandFactory.GetAllCommandInfo();
+
+            return commandInfo.Count() > 0 ? commandInfo.Select(c => new { Name = c.Name, Description = c.Usage }).ToArray() : new object { };
+
         }
 
         public IEnumerable<RoomViewModel> GetRooms()
@@ -426,13 +405,41 @@ namespace JabbR
             });
         }
 
-        private bool TryHandleCommand(string command, string room)
+        private bool TryHandleCommand(string command, string roomName)
         {
             string clientId = Context.ConnectionId;
             string userId = Caller.id;
 
-            var commandManager = new CommandManager(clientId, UserAgent, userId, room, _service, _repository, this);
-            return commandManager.TryHandleCommand(command);
+            return TryHandleCommand(command, clientId, UserAgent, userId, roomName);
+        }
+
+
+        private bool TryHandleCommand(string command, string clientId, string userAgent, string userId, string roomName)
+        {
+            command = command.Trim();
+            if (!command.StartsWith("/"))
+            {
+                return false;
+            }
+
+            string[] parts = command.Substring(1).Split(' ');
+            string commandName = parts[0];
+
+            return TryHandleCommand(commandName, parts, clientId, userAgent, userId, roomName);
+        }
+
+        private bool TryHandleCommand(string commandName, string[] parts, string clientId, string userAgent, string userId, string roomName)
+        {
+            commandName = commandName.Trim();
+            if (commandName.StartsWith("/"))
+            {
+                return false;
+            }
+
+            ICommand command = _commandFactory.Get(commandName, this);
+            command.Handle(parts, userId, roomName, clientId, userAgent);
+             
+            return true;
         }
 
         private void DisconnectClient(string clientId)
@@ -758,7 +765,7 @@ namespace JabbR
             Caller.showRooms(GetRooms());
         }
 
-        void INotificationService.NugeUser(ChatUser user, ChatUser targetUser)
+        void INotificationService.NudgeUser(ChatUser user, ChatUser targetUser)
         {
             // Send a nudge message to the sender and the sendee
             foreach (var client in targetUser.ConnectedClients)

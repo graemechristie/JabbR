@@ -21,9 +21,12 @@ using SignalR;
 using SignalR.Hosting.AspNet;
 using SignalR.Infrastructure;
 using SignalR.Ninject;
+using JabbR.Commands;
+using Ninject.Parameters;
+using SignalR.Hubs;
+using System.Reflection;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(JabbR.App_Start.Bootstrapper), "PreAppStart")]
-
 namespace JabbR.App_Start
 {
     public static class Bootstrapper
@@ -45,7 +48,7 @@ namespace JabbR.App_Start
                 return;
             }
 
-            var kernel = new StandardKernel();
+            var kernel = new StandardKernel(new CommandModule());
 
             kernel.Bind<JabbrContext>()
                 .To<JabbrContext>()
@@ -68,9 +71,9 @@ namespace JabbR.App_Start
                 .InSingletonScope();
 
             kernel.Bind<IApplicationSettings>()
-                  .To<ApplicationSettings>()
-                  .InSingletonScope();
-
+                .To<ApplicationSettings>()
+                .InSingletonScope();
+          
             Kernel = kernel;
 
             var resolver = new NinjectDependencyResolver(kernel);

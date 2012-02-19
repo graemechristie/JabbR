@@ -9,42 +9,16 @@ namespace JabbR.Commands
 {
     public class CommandManager
     {
-        private readonly string _clientId;
-        private readonly string _userAgent;
-        private readonly string _userId;
-        private readonly string _roomName;
-        private readonly INotificationService _notificationService;
-        private readonly IChatService _chatService;
         private readonly IJabbrRepository _repository;
+        private readonly Func<string, INotificationService, ICommand> _commandFactory;
 
-        public CommandManager(string clientId,
-                              string userId,
-                              string roomName,
-                              IChatService service,
-                              IJabbrRepository repository,
-                              INotificationService notificationService)
-            : this(clientId, null, userId, roomName, service, repository, notificationService)
+        public CommandManager(IJabbrRepository repository, Func<string,  INotificationService, ICommand> commandFactory)
         {
-        }
-
-        public CommandManager(string clientId,
-                              string userAgent,
-                              string userId,
-                              string roomName,
-                              IChatService service,
-                              IJabbrRepository repository,
-                              INotificationService notificationService)
-        {
-            _clientId = clientId;
-            _userAgent = userAgent;
-            _userId = userId;
-            _roomName = roomName;
-            _chatService = service;
             _repository = repository;
-            _notificationService = notificationService;
+            _commandFactory = commandFactory;
         }
 
-        public bool TryHandleCommand(string commandName, string[] parts)
+        public bool TryHandleCommand(string commandName, string[] parts, string clientId, string userAgent, string userId, string roomName, INotificationService notificationService)
         {
             commandName = commandName.Trim();
             if (commandName.StartsWith("/"))
@@ -52,18 +26,37 @@ namespace JabbR.Commands
                 return false;
             }
 
-            if (!TryHandleBaseCommand(commandName, parts) &&
-                !TryHandleUserCommand(commandName, parts) &&
-                !TryHandleRoomCommand(commandName, parts))
-            {
-                // If none of the commands are valid then throw an exception
-                throw new InvalidOperationException(String.Format("'{0}' is not a valid command.", commandName));
-            }
+            ICommand command = _commandFactory(commandName, notificationService);
+
+            command.Handle(parts, userId, roomName, clientId, userAgent);
+            //try
+            //{
+            //    ICommand command = _allCommands.Where(c => commandName.Equals(c.Name, StringComparison.OrdinalIgnoreCase)).Single();
+            //    if (command is IRoomCommand)
+            //    {
+            //        ChatUser user = _repository.VerifyUserId(userId);
+            //        ChatRoom room = _repository.VerifyUserRoom(user, roomName);
+            //        ((IRoomCommand)command).Handle(parts, user, room, clientId, userAgent, notificationService);
+            //    }
+            //    else if (command is IUserCommand)
+            //    {
+            //        ChatUser user = _repository.VerifyUserId(userId);
+            //        ((IUserCommand)command).Handle(parts, user, clientId, userAgent, notificationService);
+            //    }
+            //    else
+            //    {
+            //        ((IBaseCommand)command).Handle(parts, clientId, userAgent, notificationService);
+            //    }
+            //}
+            //catch (InvalidOperationException)
+            //{
+            //    throw new InvalidOperationException(String.Format("'{0}' is not a valid command.", commandName));
+            //}
 
             return true;
         }
 
-        public bool TryHandleCommand(string command)
+        public bool TryHandleCommand(string command, string clientId, string userAgent, string userId, string roomName, INotificationService notificationService)
         {
             command = command.Trim();
             if (!command.StartsWith("/"))
@@ -74,7 +67,7 @@ namespace JabbR.Commands
             string[] parts = command.Substring(1).Split(' ');
             string commandName = parts[0];
 
-            return TryHandleCommand(commandName, parts);
+            return TryHandleCommand(commandName, parts, clientId, userAgent, userId, roomName, notificationService);
         }
 
         // Commands that require a user and room
@@ -666,7 +659,7 @@ namespace JabbR.Commands
         private void JoinRoom(ChatUser user, ChatRoom room, string inviteCode)
         {
             _chatService.JoinRoom(user, room, inviteCode);
-            
+
             _repository.CommitChanges();
 
             _notificationService.JoinRoom(user, room);

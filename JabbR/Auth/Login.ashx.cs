@@ -18,7 +18,7 @@ namespace JabbR.Auth
         private const string VerifyTokenUrl = "https://rpxnow.com/api/v2/auth_info?apiKey={0}&token={1}";
 
         public void ProcessRequest(HttpContext context)
-        {
+       { 
             var settings = Bootstrapper.Kernel.Get<IApplicationSettings>();
             string apiKey = settings.AuthApiKey;
 

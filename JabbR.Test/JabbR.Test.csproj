@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.4.0.7\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SignalR, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Server.0.4.0.0\lib\net40\SignalR.dll</HintPath>
@@ -60,17 +60,18 @@
   <ItemGroup>
     <Compile Include="ChatFacts.cs" />
     <Compile Include="ChatServiceFacts.cs" />
-    <Compile Include="CommandManagerFacts.cs" />
+    <Compile Include="CommandFacts.cs" />
     <Compile Include="TextTransformFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JabbR\JabbR.csproj">
       <Project>{16204F16-6354-4B68-BB0F-1A4F109FC92B}</Project>
-      <Name>Chat</Name>
+      <Name>JabbR</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
