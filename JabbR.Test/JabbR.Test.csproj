@@ -60,7 +60,7 @@
   <ItemGroup>
     <Compile Include="ChatFacts.cs" />
     <Compile Include="ChatServiceFacts.cs" />
-    <Compile Include="CommandFacts.cs" />
+    <Compile Include="CommandManagerFacts.cs" />
     <Compile Include="TextTransformFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
