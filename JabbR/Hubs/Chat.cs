@@ -410,36 +410,9 @@ namespace JabbR
             string clientId = Context.ConnectionId;
             string userId = Caller.id;
 
-            return TryHandleCommand(command, clientId, UserAgent, userId, roomName);
-        }
+            var commandManager = new CommandManager(_commandFactory, this);
 
-
-        private bool TryHandleCommand(string command, string clientId, string userAgent, string userId, string roomName)
-        {
-            command = command.Trim();
-            if (!command.StartsWith("/"))
-            {
-                return false;
-            }
-
-            string[] parts = command.Substring(1).Split(' ');
-            string commandName = parts[0];
-
-            return TryHandleCommand(commandName, parts, clientId, userAgent, userId, roomName);
-        }
-
-        private bool TryHandleCommand(string commandName, string[] parts, string clientId, string userAgent, string userId, string roomName)
-        {
-            commandName = commandName.Trim();
-            if (commandName.StartsWith("/"))
-            {
-                return false;
-            }
-
-            ICommand command = _commandFactory.Get(commandName, this);
-            command.Handle(parts, userId, roomName, clientId, userAgent);
-             
-            return true;
+            return commandManager.TryHandleCommand(command, clientId, UserAgent, userId, roomName);
         }
 
         private void DisconnectClient(string clientId)

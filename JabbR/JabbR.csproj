@@ -774,6 +774,7 @@
     <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\AllowCommand.cs" />
     <Compile Include="Commands\AfkCommand.cs" />
+    <Compile Include="Commands\CommandManager.cs" />
     <Compile Include="Commands\OpenCommand.cs" />
     <Compile Include="Commands\LogoutCommand.cs" />
     <Compile Include="Commands\NoteCommand.cs" />
