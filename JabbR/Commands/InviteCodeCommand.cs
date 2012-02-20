@@ -6,10 +6,12 @@ using JabbR.Services;
 using JabbR.Models;
 using Ninject;
 using JabbR.Infrastructure;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "invitecode", Usage = "Type /invitecode - To show the current invite code", Weight=22.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "invitecode", Usage = "Type /invitecode - To show the current invite code", Weight=22.0f)]
     public class InviteCodeCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -18,6 +20,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public InviteCodeCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

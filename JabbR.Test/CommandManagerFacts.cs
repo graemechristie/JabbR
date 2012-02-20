@@ -2442,7 +2442,7 @@ namespace JabbR.Test
                 bool result = commandManager.TryHandleCommand("/nudge dfowler2");
 
                 Assert.True(result);
-                notificationService.Verify(x => x.NugeUser(user, user2), Times.Once());
+                notificationService.Verify(x => x.NudgeUser(user, user2), Times.Once());
                 Assert.Throws<InvalidOperationException>(() => commandManager.TryHandleCommand("/nudge dfowler2"));
             }
 
@@ -2474,7 +2474,7 @@ namespace JabbR.Test
                 bool result = commandManager.TryHandleCommand("/nudge dfowler2");
 
                 Assert.True(result);
-                notificationService.Verify(x => x.NugeUser(user, user2), Times.Once());
+                notificationService.Verify(x => x.NudgeUser(user, user2), Times.Once());
                 Assert.NotNull(user2.LastNudged);
             }
 

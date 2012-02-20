@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "kick", Usage = "Type /kick [user] to kick a user from the room. Note, this is only valid for owners of the room.", Weight=14.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "kick", Usage = "Type /kick [user] to kick a user from the room. Note, this is only valid for owners of the room.", Weight=14.0f)]
     public class KickCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public KickCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

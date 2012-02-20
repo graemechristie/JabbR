@@ -6,10 +6,12 @@ using JabbR.Infrastructure;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "gravatar", Usage = "Type /gravatar [email] to set your gravatar", Weight = 12.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "gravatar", Usage = "Type /gravatar [email] to set your gravatar", Weight = 12.0f)]
     public class GravatarCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -18,6 +20,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public GravatarCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatservice)
         {
             _notificationService = notificationService;

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
+    [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class CommandInfoAttribute : Attribute
+    public class CommandMetadataAttribute : ExportAttribute
     {
         public string Name { get; set; }
         public string Usage { get; set; }

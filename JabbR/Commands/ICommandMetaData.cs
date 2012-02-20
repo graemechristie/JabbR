@@ -5,10 +5,10 @@ using System.Web;
 
 namespace JabbR.Commands
 {
-    public class CommandInfo
+    public interface ICommandMetaData
     {
-        public string Name;
-        public string Usage;
-        public float Weight;
+        string Name { get; }
+        string Usage { get; }
+        float Weight { get; }
     }
 }

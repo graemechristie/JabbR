@@ -5,16 +5,19 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "who", Usage = "Type /who to show a list of all users, /who [name] to show specific information about that user", Weight = 10.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "who", Usage = "Type /who to show a list of all users, /who [name] to show specific information about that user", Weight = 10.0f)]
     public class WhoCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
+        [ImportingConstructor]
         public WhoCommand(INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;

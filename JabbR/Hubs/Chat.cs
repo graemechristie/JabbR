@@ -24,15 +24,13 @@ namespace JabbR
         private readonly IChatService _service;
         private readonly IResourceProcessor _resourceProcessor;
         private readonly IApplicationSettings _settings;
-        private readonly ICommandFactory _commandFactory;
 
-        public Chat(IApplicationSettings settings, IResourceProcessor resourceProcessor, IChatService service, IJabbrRepository repository, ICommandFactory commandFactory)
+        public Chat(IApplicationSettings settings, IResourceProcessor resourceProcessor, IChatService service, IJabbrRepository repository)
         {
             _settings = settings;
             _resourceProcessor = resourceProcessor;
             _service = service;
             _repository = repository;
-            _commandFactory = commandFactory;
         }
 
         private string UserAgent
@@ -226,9 +224,13 @@ namespace JabbR
         public object GetCommands()
         {
             // Map the Name & Description properties from all the registered command objects to an array of anonymous objects
-            var commandInfo = _commandFactory.GetAllCommandInfo();
 
-            return commandInfo.Count() > 0 ? commandInfo.Select(c => new { Name = c.Name, Description = c.Usage }).ToArray() : new object { };
+            // TODO: Ugly ... refactor somehow to get rid of this ugly not_service->command manager->help command->notification service->command_manager loop
+            var commandManager = new CommandManager("clientId", "userId", UserAgent, "roomName", _service, _repository, this);
+
+            var commandMetaData = commandManager.GetAllCommandMetaData();
+
+            return commandMetaData.Count() > 0 ? commandMetaData.Select(c => new { Name = c.Name, Description = c.Usage }).ToArray() : new object { };
 
         }
 
@@ -410,9 +412,9 @@ namespace JabbR
             string clientId = Context.ConnectionId;
             string userId = Caller.id;
 
-            var commandManager = new CommandManager(_commandFactory, this);
+            var commandManager = new CommandManager(clientId, userId, UserAgent, roomName, _service, _repository, this);
 
-            return commandManager.TryHandleCommand(command, clientId, UserAgent, userId, roomName);
+            return commandManager.TryHandleCommand(command);
         }
 
         private void DisconnectClient(string clientId)

@@ -118,7 +118,6 @@ namespace JabbR.Test
             var chatService = new Mock<IChatService>();
             var connection = new Mock<IConnection>();
             var settings = new Mock<IApplicationSettings>();
-            var commandFactory = new Mock<ICommandFactory>();
 
             settings.Setup(m => m.AuthApiKey).Returns("key");
 
@@ -126,7 +125,7 @@ namespace JabbR.Test
             repository.Add(user);
 
             // create testable chat
-            var chat = new TestableChat(settings, resourceProcessor, chatService, repository, connection, commandFactory);
+            var chat = new TestableChat(settings, resourceProcessor, chatService, repository, connection);
             var mockedConnectionObject = chat.MockedConnection.Object;
 
             // setup client agent
@@ -152,17 +151,15 @@ namespace JabbR.Test
             public IJabbrRepository Repository { get; private set; }
             public Mock<IConnection> MockedConnection { get; private set; }
             public Mock<IApplicationSettings> MockSettings { get; set; }
-            public Mock<ICommandFactory> MockCommandFactory { get; set; }
 
-            public TestableChat(Mock<IApplicationSettings> mockSettings, Mock<IResourceProcessor> mockedResourceProcessor, Mock<IChatService> mockedChatService, IJabbrRepository repository, Mock<IConnection> connection, Mock<ICommandFactory> mockCommandFactory)
-                : base(mockSettings.Object, mockedResourceProcessor.Object, mockedChatService.Object, repository, mockCommandFactory.Object)
+            public TestableChat(Mock<IApplicationSettings> mockSettings, Mock<IResourceProcessor> mockedResourceProcessor, Mock<IChatService> mockedChatService, IJabbrRepository repository, Mock<IConnection> connection)
+                : base(mockSettings.Object, mockedResourceProcessor.Object, mockedChatService.Object, repository)
             {
                 MockedResourceProcessor = mockedResourceProcessor;
                 MockedChatService = mockedChatService;
                 MockSettings = mockSettings;
                 Repository = repository;
                 MockedConnection = connection;
-                MockCommandFactory = mockCommandFactory;
             }
         }
     }

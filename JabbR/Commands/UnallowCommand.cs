@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "unallow", Usage = "Type /unallow [user] [room] - To revoke a user's permission to a private room. Only works if you're an owner of that room.", Weight = 21.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "unallow", Usage = "Type /unallow [user] [room] - To revoke a user's permission to a private room. Only works if you're an owner of that room.", Weight = 21.0f)]
     public class UnallowCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public UnallowCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

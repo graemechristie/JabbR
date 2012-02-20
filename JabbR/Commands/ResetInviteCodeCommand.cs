@@ -6,10 +6,12 @@ using JabbR.Services;
 using JabbR.Models;
 using Ninject;
 using JabbR.Infrastructure;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "resetinvitecode", Usage = "Type /resetinvitecode - To reset the current invite code. This will render the previous invite code invalid", Weight=23.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "resetinvitecode", Usage = "Type /resetinvitecode - To reset the current invite code. This will render the previous invite code invalid", Weight=23.0f)]
     public class ResetInviteCodeCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -18,6 +20,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public ResetInviteCodeCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

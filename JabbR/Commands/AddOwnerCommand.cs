@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "addowner", Usage = "Type /addowner [user] [room] - To add an owner a user as an owner to the specified room. Only works if you're an owner of that room.", Weight = 16.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "addowner", Usage = "Type /addowner [user] [room] - To add an owner a user as an owner to the specified room. Only works if you're an owner of that room.", Weight = 16.0f)]
     public class AddOwnerCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public AddOwnerCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

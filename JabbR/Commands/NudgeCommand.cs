@@ -5,16 +5,19 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "nudge", Usage = "Type /nudge to send a nudge to the whole room, or \"/nudge @nickname\" to nudge a particular user. @ is optional.", Weight=13.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "nudge", Usage = "Type /nudge to send a nudge to the whole room, or \"/nudge @nickname\" to nudge a particular user. @ is optional.", Weight=13.0f)]
     public class NudgeCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
+        [ImportingConstructor]
         public NudgeCommand(INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;

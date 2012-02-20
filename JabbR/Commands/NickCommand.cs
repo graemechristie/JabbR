@@ -5,16 +5,19 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "nick", Usage = "Type /nick [user] [password] to create a user or change your nickname. You can change your password with /nick [user] [oldpassword] [newpassword]", Weight = 2.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "nick", Usage = "Type /nick [user] [password] to create a user or change your nickname. You can change your password with /nick [user] [oldpassword] [newpassword]", Weight = 2.0f)]
     public class NickCommand : ICommand
     {
         private readonly INotificationService _notificationService;
         private readonly IJabbrRepository _repository;
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public NickCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

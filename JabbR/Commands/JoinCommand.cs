@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "join", Usage = "Type /join [room] [inviteCode] - to join a channel of your choice. If it is private and you have an invite code, enter it after the room name", Weight = 3.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "join", Usage = "Type /join [room] [inviteCode] - to join a channel of your choice. If it is private and you have an invite code, enter it after the room name", Weight = 3.0f)]
     public class JoinCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public JoinCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatservice)
         {
             _notificationService = notificationService;

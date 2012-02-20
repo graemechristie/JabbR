@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "create", Usage = "Type /create [room] to create a room", Weight = 4.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "create", Usage = "Type /create [room] to create a room", Weight = 4.0f)]
     public class CreateCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public CreateCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatservice)
         {
             _notificationService = notificationService;
@@ -26,7 +29,7 @@ namespace JabbR.Commands
 
         public void Handle(string[] parts, string userId, string roomName, string clientId, string userAgent)
         {
-            ChatUser user = _repository.VerifyUser(userId);
+            ChatUser user = _repository.VerifyUserId(userId);
 
             if (parts.Length > 2)
             {

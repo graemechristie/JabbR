@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "removeowner", Usage = "Type /removeowner [user] [room] - To remove an owner from the specified room. Only works if you're the creator of that room", Weight = 17.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "removeowner", Usage = "Type /removeowner [user] [room] - To remove an owner from the specified room. Only works if you're the creator of that room", Weight = 17.0f)]
     public class RemoveOwnerCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public RemoveOwnerCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

@@ -4,17 +4,19 @@ using System.Linq;
 using System.Web;
 using JabbR.Services;
 using JabbR.Models;
-using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "me", Usage = "Type /me 'does anything'", Weight=5.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "me", Usage = "Type /me 'does anything'", Weight=5.0f)]
     public class MeCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
+        [ImportingConstructor]
         public MeCommand( INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;

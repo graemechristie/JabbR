@@ -4,11 +4,12 @@ using System.Linq;
 using System.Web;
 using JabbR.Services;
 using JabbR.Models;
-using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "leave", Usage = "Type /leave to leave the current room. Type /leave [room name] to leave a specific room.", Weight=7.0f) ]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "leave", Usage = "Type /leave to leave the current room. Type /leave [room name] to leave a specific room.", Weight=7.0f) ]
     public class LeaveCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +18,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public LeaveCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

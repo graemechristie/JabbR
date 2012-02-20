@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "topic", Usage = "Type /topic [topic] to set the room topic. Type /topic to clear the room's topic.", Weight=27.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "topic", Usage = "Type /topic [topic] to set the room topic. Type /topic to clear the room's topic.", Weight=27.0f)]
     public class TopicCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public TopicCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

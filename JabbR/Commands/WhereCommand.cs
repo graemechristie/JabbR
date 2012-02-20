@@ -5,16 +5,19 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "where", Usage = "Type /where [name] to see the rooms that user is in", Weight = 9.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "where", Usage = "Type /where [name] to see the rooms that user is in", Weight = 9.0f)]
     public class WhereCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
+        [ImportingConstructor]
         public WhereCommand(INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;

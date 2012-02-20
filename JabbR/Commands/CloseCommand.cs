@@ -5,10 +5,12 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "close", Usage = "Type /close [room] - To close a room. Only works if you're an owner of that room.", Weight = 19.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "close", Usage = "Type /close [room] - To close a room. Only works if you're an owner of that room.", Weight = 19.0f)]
     public class CloseCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +19,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public CloseCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;

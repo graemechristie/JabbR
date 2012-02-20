@@ -5,16 +5,19 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "note", Usage = "Type /note - To set a note shown via a paperclip icon next to your name, with the message appearing when you hover over it.", Weight = 24.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "note", Usage = "Type /note - To set a note shown via a paperclip icon next to your name, with the message appearing when you hover over it.", Weight = 24.0f)]
     public class NoteCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
+        [ImportingConstructor]
         public NoteCommand(INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;

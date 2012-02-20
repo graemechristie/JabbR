@@ -6,17 +6,19 @@ using JabbR.Services;
 using JabbR.Models;
 using Ninject;
 using JabbR.Infrastructure;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "msg", Usage = "Type /msg @nickname (message) to send a private message to nickname. @ is optional", Weight = 6.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "msg", Usage = "Type /msg @nickname (message) to send a private message to nickname. @ is optional", Weight = 6.0f)]
     public class MsgCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
-
+        [ImportingConstructor]
         public MsgCommand(INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;

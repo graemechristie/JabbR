@@ -4,11 +4,12 @@ using System.Linq;
 using System.Web;
 using JabbR.Services;
 using JabbR.Models;
-using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "open", Usage = "Type /open [room] -  To open a room. Only works if you're the creator of that room.", Weight = 18.5f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "open", Usage = "Type /open [room] -  To open a room. Only works if you're the creator of that room.", Weight = 18.5f)]
     public class OpenCommand : ICommand
     {
         private readonly INotificationService _notificationService;
@@ -17,6 +18,7 @@ namespace JabbR.Commands
 
         private readonly IChatService _chatService;
 
+        [ImportingConstructor]
         public OpenCommand(INotificationService notificationService, IJabbrRepository repository, IChatService chatService)
         {
             _notificationService = notificationService;
@@ -30,7 +32,7 @@ namespace JabbR.Commands
 
              if (parts.Length < 2)
             {
-                throw new InvalidOperationException("Which room do you want to open ?");
+                throw new InvalidOperationException("Which room do you want to open?");
             }
 
             roomName = parts[1];

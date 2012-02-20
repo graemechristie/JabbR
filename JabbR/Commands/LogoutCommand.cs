@@ -5,17 +5,19 @@ using System.Web;
 using JabbR.Services;
 using JabbR.Models;
 using Ninject;
+using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [CommandInfo(Name = "logout", Usage = "Type /logout - To logout from this client (chat cookie will be removed).", Weight = 15.0f)]
+    [Export(typeof(ICommand))]
+    [CommandMetadata(Name = "logout", Usage = "Type /logout - To logout from this client (chat cookie will be removed).", Weight = 15.0f)]
     public class LogoutCommand : ICommand
     {
         private readonly INotificationService _notificationService;
 
         private readonly IJabbrRepository _repository;
 
-
+        [ImportingConstructor]
         public LogoutCommand(INotificationService notificationService, IJabbrRepository repository)
         {
             _notificationService = notificationService;
