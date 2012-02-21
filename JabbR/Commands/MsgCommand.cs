@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
-using JabbR.Infrastructure;
 using System.ComponentModel.Composition;
+using System.Linq;
+using JabbR.Infrastructure;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "msg", Usage = "Type /msg @nickname (message) to send a private message to nickname. @ is optional", Weight = 6.0f)]
+    [CommandMetadata(
+        Name = "msg", 
+        Usage = "Type /msg @nickname (message) to send a private message to nickname. @ is optional", 
+        Weight = 6.0f
+    )]
     public class MsgCommand : ICommand
     {
         private readonly INotificationService _notificationService;

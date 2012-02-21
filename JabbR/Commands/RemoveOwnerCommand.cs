@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "removeowner", Usage = "Type /removeowner [user] [room] - To remove an owner from the specified room. Only works if you're the creator of that room", Weight = 17.0f)]
+    [CommandMetadata(
+        Name = "removeowner", 
+        Usage = "Type /removeowner [user] [room] - To remove an owner from the specified room. Only works if you're the creator of that room", 
+        Weight = 17.0f
+    )]
     public class RemoveOwnerCommand : ICommand
     {
         private readonly INotificationService _notificationService;

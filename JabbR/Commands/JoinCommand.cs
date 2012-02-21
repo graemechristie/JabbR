@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "join", Usage = "Type /join [room] [inviteCode] - to join a channel of your choice. If it is private and you have an invite code, enter it after the room name", Weight = 3.0f)]
+    [CommandMetadata(
+        Name = "join", 
+        Usage = "Type /join [room] [inviteCode] - to join a channel of your choice. " +
+            "If it is private and you have an invite code, enter it after the room name", 
+        Weight = 3.0f
+    )]
     public class JoinCommand : ICommand
     {
         private readonly INotificationService _notificationService;

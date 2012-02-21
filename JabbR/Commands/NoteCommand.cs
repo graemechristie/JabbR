@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using System.Linq;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "note", Usage = "Type /note - To set a note shown via a paperclip icon next to your name, with the message appearing when you hover over it.", Weight = 24.0f)]
+    [CommandMetadata(
+        Name = "note", 
+        Usage = "Type /note - To set a note shown via a paperclip icon next to your name, " +
+            "with the message appearing when you hover over it.", 
+        Weight = 24.0f
+    )]
     public class NoteCommand : ICommand
     {
         private readonly INotificationService _notificationService;

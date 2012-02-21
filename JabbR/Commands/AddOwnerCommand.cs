@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "addowner", Usage = "Type /addowner [user] [room] - To add an owner a user as an owner to the specified room. Only works if you're an owner of that room.", Weight = 16.0f)]
+    [CommandMetadata(
+        Name = "addowner", 
+        Usage = "Type /addowner [user] [room] - To add an owner a user as an owner to the specified room. " +
+            "Only works if you're an owner of that room.", 
+        Weight = 16.0f
+    )]
     public class AddOwnerCommand : ICommand
     {
         private readonly INotificationService _notificationService;

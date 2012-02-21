@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.Composition;
 using JabbR.Services;
-using JabbR.Models;
-using Ninject;
-using System.ComponentModel.Composition;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "rooms", Usage = "Type /rooms to show the list of rooms", Weight=8.0f)]
+    [CommandMetadata(
+        Name = "rooms", 
+        Usage = "Type /rooms to show the list of rooms", 
+        Weight=8.0f
+    )]
     public class RoomsCommand : ICommand
     {
         private readonly INotificationService _notificationService;

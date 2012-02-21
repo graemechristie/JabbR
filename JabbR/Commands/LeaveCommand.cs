@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
+﻿using System.ComponentModel.Composition;
 using JabbR.Models;
-using System.ComponentModel.Composition;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "leave", Usage = "Type /leave to leave the current room. Type /leave [room name] to leave a specific room.", Weight=7.0f) ]
+    [CommandMetadata(
+        Name = "leave", 
+        Usage = "Type /leave to leave the current room. Type /leave [room name] to leave a specific room.", 
+        Weight=7.0f
+    )]
     public class LeaveCommand : ICommand
     {
         private readonly INotificationService _notificationService;

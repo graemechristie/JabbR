@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
+﻿using System.ComponentModel.Composition;
 using JabbR.Models;
-using Ninject;
-using System.ComponentModel.Composition;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "logout", Usage = "Type /logout - To logout from this client (chat cookie will be removed).", Weight = 15.0f)]
+    [CommandMetadata(
+        Name = "logout", 
+        Usage = "Type /logout - To logout from this client (chat cookie will be removed).", 
+        Weight = 15.0f
+    )]
     public class LogoutCommand : ICommand
     {
         private readonly INotificationService _notificationService;

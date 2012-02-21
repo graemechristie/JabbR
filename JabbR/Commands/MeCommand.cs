@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
 using System.ComponentModel.Composition;
+using System.Linq;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "me", Usage = "Type /me 'does anything'", Weight=5.0f)]
+    [CommandMetadata(
+        Name = "me", 
+        Usage = "Type /me 'does anything'", 
+        Weight=5.0f
+    )]
     public class MeCommand : ICommand
     {
         private readonly INotificationService _notificationService;

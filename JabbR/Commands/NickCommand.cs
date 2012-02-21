@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "nick", Usage = "Type /nick [user] [password] to create a user or change your nickname. You can change your password with /nick [user] [oldpassword] [newpassword]", Weight = 2.0f)]
+    [CommandMetadata(
+        Name = "nick", 
+        Usage = "Type /nick [user] [password] to create a user or change your nickname. " +
+            "You can change your password with /nick [user] [oldpassword] [newpassword]", 
+        Weight = 2.0f
+    )]
     public class NickCommand : ICommand
     {
         private readonly INotificationService _notificationService;

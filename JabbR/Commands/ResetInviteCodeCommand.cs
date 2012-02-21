@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
-using JabbR.Infrastructure;
 using System.ComponentModel.Composition;
+using JabbR.Infrastructure;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "resetinvitecode", Usage = "Type /resetinvitecode - To reset the current invite code. This will render the previous invite code invalid", Weight=23.0f)]
+    [CommandMetadata(
+        Name = "resetinvitecode", 
+        Usage = "Type /resetinvitecode - To reset the current invite code. " +
+            "This will render the previous invite code invalid", 
+        Weight=23.0f
+    )]
     public class ResetInviteCodeCommand : ICommand
     {
         private readonly INotificationService _notificationService;

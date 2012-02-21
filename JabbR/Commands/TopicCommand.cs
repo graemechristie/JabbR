@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using System.Linq;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "topic", Usage = "Type /topic [topic] to set the room topic. Type /topic to clear the room's topic.", Weight=27.0f)]
+    [CommandMetadata(
+        Name = "topic", 
+        Usage = "Type /topic [topic] to set the room topic. Type /topic to clear the room's topic.", 
+        Weight=27.0f
+    )]
     public class TopicCommand : ICommand
     {
         private readonly INotificationService _notificationService;

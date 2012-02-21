@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JabbR.Infrastructure;
-using JabbR.Services;
-using JabbR.Models;
-using Ninject;
 using System.ComponentModel.Composition;
+using System.Linq;
+using JabbR.Infrastructure;
+using JabbR.Models;
+using JabbR.Services;
 
 namespace JabbR.Commands
 {
-    [Export(typeof(ICommand))]
-    [CommandMetadata(Name = "gravatar", Usage = "Type /gravatar [email] to set your gravatar", Weight = 12.0f)]
+    [CommandMetadata(
+        Name = "gravatar", 
+        Usage = "Type /gravatar [email] to set your gravatar", 
+        Weight = 12.0f
+    )]
     public class GravatarCommand : ICommand
     {
         private readonly INotificationService _notificationService;
