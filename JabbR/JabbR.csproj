@@ -759,16 +759,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\Bootstrapper.cs" />
+    <Compile Include="App_Start\CommandModule.cs" />
     <Compile Include="Auth\Login.ashx.cs">
       <DependentUpon>Login.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Commands\CommandMetadata.cs" />
     <Compile Include="Commands\ICommandMetaData.cs" />
     <Compile Include="Commands\CommandMetadataAttribute.cs" />
     <Compile Include="Commands\AddOwnerCommand.cs" />
     <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\AllowCommand.cs" />
     <Compile Include="Commands\AfkCommand.cs" />
-    <Compile Include="Commands\CommandManager.cs" />
     <Compile Include="Commands\OpenCommand.cs" />
     <Compile Include="Commands\LogoutCommand.cs" />
     <Compile Include="Commands\NoteCommand.cs" />

@@ -45,7 +45,7 @@ namespace JabbR.App_Start
                 return;
             }
 
-            var kernel = new StandardKernel();
+            var kernel = new StandardKernel(new CommandModule());
 
             kernel.Bind<JabbrContext>()
                 .To<JabbrContext>()

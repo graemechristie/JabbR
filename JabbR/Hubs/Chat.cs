@@ -24,13 +24,17 @@ namespace JabbR
         private readonly IChatService _service;
         private readonly IResourceProcessor _resourceProcessor;
         private readonly IApplicationSettings _settings;
+        private readonly Func<string, INotificationService, ICommand> _commandFactory;
+        private readonly Func<IEnumerable<CommandMetadata>> _commandMetadata;
 
-        public Chat(IApplicationSettings settings, IResourceProcessor resourceProcessor, IChatService service, IJabbrRepository repository)
+        public Chat(IApplicationSettings settings, IResourceProcessor resourceProcessor, IChatService service, IJabbrRepository repository, Func<string, INotificationService, ICommand> commandFactory, Func<IEnumerable<CommandMetadata>> commandMetadata)
         {
             _settings = settings;
             _resourceProcessor = resourceProcessor;
             _service = service;
             _repository = repository;
+            _commandFactory = commandFactory;
+            _commandMetadata = commandMetadata;
         }
 
         private string UserAgent
@@ -225,10 +229,7 @@ namespace JabbR
         {
             // Map the Name & Description properties from all the registered command objects to an array of anonymous objects
 
-            // TODO: Ugly ... refactor somehow to get rid of this ugly not_service->command manager->help command->notification service->command_manager loop
-            var commandManager = new CommandManager("clientId", "userId", UserAgent, "roomName", _service, _repository, this);
-
-            var commandMetaData = commandManager.GetAllCommandMetaData();
+            var commandMetaData = _commandMetadata();
 
             return commandMetaData.Count() > 0 ? commandMetaData.Select(c => new { Name = c.Name, Description = c.Usage }).ToArray() : new object { };
 
@@ -412,9 +413,39 @@ namespace JabbR
             string clientId = Context.ConnectionId;
             string userId = Caller.id;
 
-            var commandManager = new CommandManager(clientId, userId, UserAgent, roomName, _service, _repository, this);
+            command = command.Trim();
+            if (!command.StartsWith("/"))
+            {
+                return false;
+            }
 
-            return commandManager.TryHandleCommand(command);
+            string[] parts = command.Substring(1).Split(' ');
+            string commandName = parts[0];
+
+            return TryHandleCommand(commandName, parts, userId, roomName, clientId, UserAgent);
+        }
+
+        public bool TryHandleCommand(string commandName, string[] parts, string userId, string roomName, string clientId, string userAgent)
+        {
+            commandName = commandName.Trim();
+            if (commandName.StartsWith("/"))
+            {
+                return false;
+            }
+
+            ICommand command;
+            try
+            {
+                command = _commandFactory(commandName, this);
+            }
+            catch (InvalidOperationException) // Command was not found in the collection
+            {
+                throw new InvalidOperationException(String.Format("'{0}' is not a valid command.", commandName));
+            }
+
+            command.Handle(parts, userId, roomName, clientId, userAgent);
+
+            return true;
         }
 
         private void DisconnectClient(string clientId)
