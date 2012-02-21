@@ -20,7 +20,7 @@ namespace JabbR.Commands
         private readonly IJabbrRepository _repository;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<Lazy<ICommand, ICommandMetaData>> _commands { get; set; } 
+        private IEnumerable<Lazy<ICommand, ICommandMetaData>> _commands { get; set; }
 
         public CommandManager(string clientId,
                               string userId,
@@ -67,7 +67,7 @@ namespace JabbR.Commands
             var batch = new CompositionBatch();
             batch.AddPart(this);
             container.Compose(batch);    
-        }
+       } 
 
         public bool TryHandleCommand(string command)
         {
@@ -108,7 +108,9 @@ namespace JabbR.Commands
 
         public IEnumerable<ICommandMetaData> GetAllCommandMetaData()
         {
-            return _commands.Select(ic => ic.Metadata);
+            return _commands == null 
+                    ? new List<ICommandMetaData>()
+                    :_commands.Select(ic => ic.Metadata);
         }
     }
 }
