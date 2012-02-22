@@ -7,16 +7,42 @@ using JabbR.Commands;
 using JabbR.Services;
 using Ninject.Parameters;
 using Ninject;
+using SignalR.Hubs;
 
 namespace JabbR.App_Start
 {
     public class CommandModule : NinjectModule
     {
+        // We manually list command types here to avoid the overhead of reflection
+        // But we can do it either way (see below)
         private static Type[] _commandTypes = { typeof(HelpCommand),
                                         typeof(AfkCommand),
                                         typeof(AddOwnerCommand),
                                         typeof(AllowCommand),
-                                        typeof(CloseCommand)
+                                        typeof(CloseCommand),
+                                        typeof(CreateCommand),
+                                        typeof(FlagCommand),
+                                        typeof(GravatarCommand),
+                                        typeof(InviteCodeCommand),
+                                        typeof(JoinCommand),
+                                        typeof(KickCommand),
+                                        typeof(LeaveCommand),
+                                        typeof(ListCommand),
+                                        typeof(LockCommand),
+                                        typeof(LogoutCommand),
+                                        typeof(MeCommand),
+                                        typeof(MsgCommand),
+                                        typeof(NickCommand),
+                                        typeof(NoteCommand),
+                                        typeof(NudgeCommand),
+                                        typeof(OpenCommand),
+                                        typeof(RemoveOwnerCommand),
+                                        typeof(ResetInviteCodeCommand),
+                                        typeof(RoomsCommand),
+                                        typeof(TopicCommand),
+                                        typeof(UnallowCommand),
+                                        typeof(WhereCommand),
+                                        typeof(WhoCommand)
                                       };
 
         public override void Load()
@@ -25,7 +51,7 @@ namespace JabbR.App_Start
             // We won't worry about this for now, and just use a list of known commands.
             //var commandTypes = Assembly.GetExecutingAssembly().GetTypes()
             //   .Where(t => t.GetInterfaces().Contains(typeof(ICommand)) && (t.GetCustomAttributes(typeof(CommandInfoAttribute), true).Count()) != 0);
-
+            
             foreach (var ct in _commandTypes)
             {
                 var cma=ct.GetCustomAttributes(typeof(CommandMetadataAttribute), true).First() as CommandMetadataAttribute;
@@ -42,7 +68,6 @@ namespace JabbR.App_Start
                 .ToMethod(
                     context =>
                         (command, notificationService) => context.Kernel.Get<ICommand>(command, new ConstructorArgument("notificationService", notificationService)));
-
 
             // Ad Hoc method to get all commands ... basically just used to construct help text
             Bind<Func<IEnumerable<CommandMetadata>>>()

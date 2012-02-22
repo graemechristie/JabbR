@@ -438,7 +438,7 @@ namespace JabbR
             {
                 command = _commandFactory(commandName, this);
             }
-            catch (InvalidOperationException) // Command was not found in the collection
+            catch (ActivationException) // Command was not found in the collection
             {
                 throw new InvalidOperationException(String.Format("'{0}' is not a valid command.", commandName));
             }
